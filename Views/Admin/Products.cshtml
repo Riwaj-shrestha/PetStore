@@ -10,15 +10,19 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Product Filters</h5>
-                <a href="@Url.Action("CreateProduct")" class="btn btn-admin-primary">
+                <a href="/Admin/CreateProduct" class="btn btn-admin-primary">
                     ➕ Add New Product
                 </a>
             </div>
             <div class="card-body">
-                <form method="get" asp-action="Products" class="row g-3">
+                <form method="get" action="/Admin/Products" class="row g-3">
                     <div class="col-md-5">
+                        @{
+                            var searchValue = ViewBag.SearchTerm != null ? ViewBag.SearchTerm.ToString() : "";
+                        }
                         <input type="text" class="form-control" name="searchTerm" 
-                               placeholder="Search by name or breed..." value="@ViewBag.SearchTerm">
+                               placeholder="Search by name or breed..." 
+                               value="@searchValue">
                     </div>
                     <div class="col-md-4">
                         <select class="form-select" name="categoryId">
@@ -27,7 +31,9 @@
                             {
                                 @foreach (var category in ViewBag.Categories)
                                 {
-                                    @if (ViewBag.SelectedCategoryId == category.CategoryID)
+                                    var isSelected = ViewBag.SelectedCategoryId != null && ViewBag.SelectedCategoryId == category.CategoryID;
+                                    
+                                    @if (isSelected)
                                     {
                                         <option value="@category.CategoryID" selected>@category.CategoryName</option>
                                     }
@@ -85,7 +91,10 @@
                                         <td><strong>@product.ProductName</strong></td>
                                         <td>@product.Breed</td>
                                         <td>
-                                            <span class="badge bg-info">@product.Category?.CategoryName</span>
+                                            @if (product.Category != null)
+                                            {
+                                                <span class="badge bg-info">@product.Category.CategoryName</span>
+                                            }
                                         </td>
                                         <td><strong>$@product.Price.ToString("N2")</strong></td>
                                         <td>
@@ -105,11 +114,11 @@
                                         <td>@product.AgeInMonths mo</td>
                                         <td>
                                             <div class="btn-group" role="group">
-                                                <a href="@Url.Action("EditProduct", new { id = product.ProductID })" 
+                                                <a href="/Admin/EditProduct/@product.ProductID" 
                                                    class="btn btn-sm btn-outline-primary">
                                                     ✏️ Edit
                                                 </a>
-                                                <form method="post" asp-action="DeleteProduct" asp-route-id="@product.ProductID" 
+                                                <form method="post" action="/Admin/DeleteProduct/@product.ProductID" 
                                                       style="display: inline;"
                                                       onsubmit="return confirm('Are you sure you want to delete @product.ProductName?');">
                                                     @Html.AntiForgeryToken()
@@ -129,7 +138,7 @@
                 {
                     <div class="text-center py-5">
                         <p class="text-muted">No products found.</p>
-                        <a href="@Url.Action("CreateProduct")" class="btn btn-admin-primary">
+                        <a href="/Admin/CreateProduct" class="btn btn-admin-primary">
                             ➕ Add Your First Product
                         </a>
                     </div>

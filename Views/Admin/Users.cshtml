@@ -12,10 +12,14 @@
                 <h5 class="mb-0">User Filters</h5>
             </div>
             <div class="card-body">
-                <form method="get" asp-action="Users" class="row g-3">
+                <form method="get" action="/Admin/Users" class="row g-3">
                     <div class="col-md-6">
+                        @{
+                            var searchValue = ViewBag.SearchTerm != null ? ViewBag.SearchTerm.ToString() : "";
+                        }
                         <input type="text" class="form-control" name="searchTerm" 
-                               placeholder="Search by name, email, or username..." value="@ViewBag.SearchTerm">
+                               placeholder="Search by name, email, or username..." 
+                               value="@searchValue">
                     </div>
                     <div class="col-md-3">
                         <select class="form-select" name="roleFilter">
@@ -91,13 +95,13 @@
                                         <td>@user.CreatedAt.ToString("MMM dd, yyyy")</td>
                                         <td>
                                             <div class="btn-group" role="group">
-                                                <a href="@Url.Action("EditUser", new { id = user.UserID })" 
+                                                <a href="/Admin/EditUser/@user.UserID" 
                                                    class="btn btn-sm btn-outline-primary">
                                                     ✏️ Edit
                                                 </a>
                                                 @if (user.UserID != Context.Session.GetInt32("UserID"))
                                                 {
-                                                    <form method="post" asp-action="DeleteUser" asp-route-id="@user.UserID" 
+                                                    <form method="post" action="/Admin/DeleteUser/@user.UserID" 
                                                           style="display: inline;"
                                                           onsubmit="return confirm('Are you sure you want to delete user @user.Username?');">
                                                         @Html.AntiForgeryToken()

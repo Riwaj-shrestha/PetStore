@@ -1,7 +1,7 @@
 @model PetStore.Models.Category
 
 @{
-    ViewData["Title"] = "Edit Category";
+    ViewData["Title"] = "Edit Category: " + Model.CategoryName;
     Layout = "_AdminLayout";
 }
 
@@ -12,28 +12,27 @@
                 <h5 class="mb-0">Edit Category: @Model.CategoryName</h5>
             </div>
             <div class="card-body">
-                <form method="post" asp-action="EditCategory" asp-route-id="@Model.CategoryID">
+                <form method="post" action="/Admin/EditCategory/@Model.CategoryID">
                     @Html.AntiForgeryToken()
-                    <input type="hidden" asp-for="CategoryID" />
-                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    <input type="hidden" name="CategoryID" value="@Model.CategoryID" />
 
                     <div class="mb-3">
-                        <label asp-for="CategoryName" class="form-label">Category Name *</label>
-                        <input asp-for="CategoryName" class="form-control" required />
-                        <span asp-validation-for="CategoryName" class="text-danger"></span>
+                        <label class="form-label">Category Name *</label>
+                        <input type="text" name="CategoryName" value="@Model.CategoryName" class="form-control" 
+                               placeholder="e.g., Dogs, Cats, Birds" required />
                     </div>
 
                     <div class="mb-3">
-                        <label asp-for="Description" class="form-label">Description *</label>
-                        <textarea asp-for="Description" class="form-control" rows="3" required></textarea>
-                        <span asp-validation-for="Description" class="text-danger"></span>
+                        <label class="form-label">Description *</label>
+                        <textarea name="Description" class="form-control" rows="3" 
+                                  placeholder="Describe this category..." required>@Model.Description</textarea>
                     </div>
 
                     <div class="d-flex justify-content-between">
-                        <a href="@Url.Action("Categories")" class="btn btn-secondary">
+                        <a href="/Admin/Categories" class="btn btn-secondary">
                             ← Back to Categories
                         </a>
-                        <button type="submit" class="btn btn-success">
+                        <button type="submit" class="btn btn-primary">
                             ✓ Save Changes
                         </button>
                     </div>
@@ -42,7 +41,3 @@
         </div>
     </div>
 </div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

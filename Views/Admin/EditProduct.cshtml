@@ -1,7 +1,7 @@
 @model PetStore.Models.Product
 
 @{
-    ViewData["Title"] = "Edit Product";
+    ViewData["Title"] = "Edit Product: " + Model.ProductName;
     Layout = "_AdminLayout";
 }
 
@@ -12,35 +12,32 @@
                 <h5 class="mb-0">Edit Product: @Model.ProductName</h5>
             </div>
             <div class="card-body">
-                <form method="post" asp-action="EditProduct" asp-route-id="@Model.ProductID">
+                <form method="post" action="/Admin/EditProduct/@Model.ProductID">
                     @Html.AntiForgeryToken()
-                    <input type="hidden" asp-for="ProductID" />
-                    <input type="hidden" asp-for="CreatedAt" />
-                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    <input type="hidden" name="ProductID" value="@Model.ProductID" />
+                    <input type="hidden" name="CreatedAt" value="@Model.CreatedAt" />
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label asp-for="ProductName" class="form-label">Product Name *</label>
-                            <input asp-for="ProductName" class="form-control" required />
-                            <span asp-validation-for="ProductName" class="text-danger"></span>
+                            <label class="form-label">Product Name *</label>
+                            <input type="text" name="ProductName" value="@Model.ProductName" class="form-control" required />
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label asp-for="Breed" class="form-label">Breed *</label>
-                            <input asp-for="Breed" class="form-control" required />
-                            <span asp-validation-for="Breed" class="text-danger"></span>
+                            <label class="form-label">Breed *</label>
+                            <input type="text" name="Breed" value="@Model.Breed" class="form-control" required />
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label asp-for="CategoryID" class="form-label">Category *</label>
-                            <select asp-for="CategoryID" class="form-select" required>
+                            <label class="form-label">Category *</label>
+                            <select name="CategoryID" class="form-select" required>
                                 @if (ViewBag.Categories != null)
                                 {
                                     @foreach (var category in ViewBag.Categories)
                                     {
-                                        if (Model.CategoryID == category.CategoryID)
+                                        @if (category.CategoryID == Model.CategoryID)
                                         {
                                             <option value="@category.CategoryID" selected>@category.CategoryName</option>
                                         }
@@ -51,12 +48,11 @@
                                     }
                                 }
                             </select>
-                            <span asp-validation-for="CategoryID" class="text-danger"></span>
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label asp-for="Gender" class="form-label">Gender *</label>
-                            <select asp-for="Gender" class="form-select" required>
+                            <label class="form-label">Gender *</label>
+                            <select name="Gender" class="form-select" required>
                                 @if (Model.Gender == "Male")
                                 {
                                     <option value="Male" selected>Male</option>
@@ -68,68 +64,59 @@
                                     <option value="Female" selected>Female</option>
                                 }
                             </select>
-                            <span asp-validation-for="Gender" class="text-danger"></span>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-4 mb-3">
-                            <label asp-for="Price" class="form-label">Price ($) *</label>
-                            <input asp-for="Price" type="number" step="0.01" class="form-control" required />
-                            <span asp-validation-for="Price" class="text-danger"></span>
+                            <label class="form-label">Price ($) *</label>
+                            <input type="number" name="Price" value="@Model.Price" step="0.01" min="0" class="form-control" required />
                         </div>
 
                         <div class="col-md-4 mb-3">
-                            <label asp-for="StockQuantity" class="form-label">Stock Quantity *</label>
-                            <input asp-for="StockQuantity" type="number" class="form-control" required />
-                            <span asp-validation-for="StockQuantity" class="text-danger"></span>
+                            <label class="form-label">Stock Quantity *</label>
+                            <input type="number" name="StockQuantity" value="@Model.StockQuantity" min="0" class="form-control" required />
                         </div>
 
                         <div class="col-md-4 mb-3">
-                            <label asp-for="AgeInMonths" class="form-label">Age (Months) *</label>
-                            <input asp-for="AgeInMonths" type="number" class="form-control" required />
-                            <span asp-validation-for="AgeInMonths" class="text-danger"></span>
+                            <label class="form-label">Age (Months) *</label>
+                            <input type="number" name="AgeInMonths" value="@Model.AgeInMonths" min="0" class="form-control" required />
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label asp-for="Color" class="form-label">Color *</label>
-                            <input asp-for="Color" class="form-control" required />
-                            <span asp-validation-for="Color" class="text-danger"></span>
+                            <label class="form-label">Color *</label>
+                            <input type="text" name="Color" value="@Model.Color" class="form-control" required />
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <label asp-for="WeightInKg" class="form-label">Weight (kg) *</label>
-                            <input asp-for="WeightInKg" type="number" step="0.01" class="form-control" required />
-                            <span asp-validation-for="WeightInKg" class="text-danger"></span>
+                            <label class="form-label">Weight (kg) *</label>
+                            <input type="number" name="WeightInKg" value="@Model.WeightInKg" step="0.01" min="0" class="form-control" required />
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label asp-for="ImageUrl" class="form-label">Image URL *</label>
-                        <input asp-for="ImageUrl" class="form-control" required />
-                        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                        <label class="form-label">Image URL *</label>
+                        <input type="text" name="ImageUrl" value="@Model.ImageUrl" class="form-control" placeholder="https://example.com/image.jpg" required />
                         <small class="text-muted">Enter the full URL of the product image</small>
                     </div>
 
                     <div class="mb-3">
-                        <label asp-for="Description" class="form-label">Description *</label>
-                        <textarea asp-for="Description" class="form-control" rows="3" required></textarea>
-                        <span asp-validation-for="Description" class="text-danger"></span>
+                        <label class="form-label">Description *</label>
+                        <textarea name="Description" class="form-control" rows="3" required>@Model.Description</textarea>
                     </div>
 
                     <div class="mb-3">
-                        <label asp-for="HealthInfo" class="form-label">Health Information *</label>
-                        <textarea asp-for="HealthInfo" class="form-control" rows="2" required></textarea>
-                        <span asp-validation-for="HealthInfo" class="text-danger"></span>
+                        <label class="form-label">Health Information *</label>
+                        <textarea name="HealthInfo" class="form-control" rows="2" required>@Model.HealthInfo</textarea>
                     </div>
 
                     <div class="d-flex justify-content-between">
-                        <a href="@Url.Action("Products")" class="btn btn-secondary">
+                        <a href="/Admin/Products" class="btn btn-secondary">
                             ← Back to Products
                         </a>
-                        <button type="submit" class="btn btn-admin-primary">
+                        <button type="submit" class="btn btn-primary">
                             ✓ Save Changes
                         </button>
                     </div>
@@ -138,7 +125,3 @@
         </div>
     </div>
 </div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

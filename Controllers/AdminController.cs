@@ -96,17 +96,24 @@ namespace PetStore.Controllers
         [AdminAuthorize]
         public async Task<IActionResult> CreateProduct(Product product)
         {
-            if (ModelState.IsValid)
+            // DEBUG: Show all validation errors
+            if (!ModelState.IsValid)
             {
-                product.CreatedAt = DateTime.Now;
-                _context.Products.Add(product);
-                await _context.SaveChangesAsync();
-                TempData["Success"] = "Product created successfully!";
-                return RedirectToAction("Products");
+                var errors = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+
+                TempData["Error"] = "Validation failed: " + string.Join(", ", errors);
+                ViewBag.Categories = await _context.Categories.OrderBy(c => c.CategoryName).ToListAsync();
+                return View(product);
             }
 
-            ViewBag.Categories = await _context.Categories.OrderBy(c => c.CategoryName).ToListAsync();
-            return View(product);
+            product.CreatedAt = DateTime.Now;
+            _context.Products.Add(product);
+            await _context.SaveChangesAsync();
+            TempData["Success"] = "Product created successfully!";
+            return RedirectToAction("Products");
         }
 
         [AdminAuthorize]
@@ -309,6 +316,7 @@ namespace PetStore.Controllers
         }
 
         [AdminAuthorize]
+        [AdminAuthorize]
         public IActionResult CreateCategory()
         {
             return View();
@@ -319,15 +327,22 @@ namespace PetStore.Controllers
         [AdminAuthorize]
         public async Task<IActionResult> CreateCategory(Category category)
         {
-            if (ModelState.IsValid)
+            // DEBUG: Show all validation errors
+            if (!ModelState.IsValid)
             {
-                _context.Categories.Add(category);
-                await _context.SaveChangesAsync();
-                TempData["Success"] = "Category created successfully!";
-                return RedirectToAction("Categories");
+                var errors = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+
+                TempData["Error"] = "Validation failed: " + string.Join(", ", errors);
+                return View(category);
             }
 
-            return View(category);
+            _context.Categories.Add(category);
+            await _context.SaveChangesAsync();
+            TempData["Success"] = "Category created successfully!";
+            return RedirectToAction("Categories");
         }
 
         [AdminAuthorize]
