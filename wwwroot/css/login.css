@@ -1,0 +1,122 @@
+﻿/* ---------- Auth Pages (Login / Register) ---------- */
+
+.auth-page {
+    min-height: calc(100vh - 70px); /* 预留导航栏高度，可按需要调 */
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(180deg, #ffe9d1 0%, #fff7ee 40%, #ffffff 100%);
+}
+
+/* 顶部渐变 Banner，跟首页 hero 对齐 */
+.auth-hero {
+    padding: 60px 20px;
+    text-align: center;
+    background: linear-gradient(90deg, #ff8a5c 0%, #ff6b6b 100%);
+    color: #ffffff;
+}
+
+.auth-title {
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.auth-subtitle {
+    font-size: 1.05rem;
+    opacity: 0.95;
+}
+
+/* 中间卡片 */
+.auth-card-wrapper {
+    margin-top: -60px; /* 往上顶一点，卡片压在 Banner 下缘 */
+    padding: 0 15px 60px;
+    display: flex;
+    justify-content: center;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 480px;
+    background: #ffffff;
+    border-radius: 24px;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+    padding: 30px 26px 32px;
+}
+
+.auth-card-title {
+    font-weight: 700;
+    color: #2b323b;
+}
+
+/* 表单控件 */
+.auth-label {
+    font-weight: 600;
+    color: #2b323b;
+}
+
+.auth-input {
+    border-radius: 12px;
+    border: 1px solid #dde2eb;
+    padding: 10px 12px;
+}
+
+    .auth-input:focus {
+        border-color: #ff8a5c;
+        box-shadow: 0 0 0 0.2rem rgba(255, 138, 92, 0.25);
+    }
+
+/* 按钮使用橙色渐变，和站点主色统一 */
+.auth-btn {
+    background: linear-gradient(90deg, #ff8a5c 0%, #ff6b6b 100%);
+    border: none;
+    color: #fff;
+    font-weight: 600;
+    padding: 10px 0;
+    border-radius: 999px;
+    box-shadow: 0 10px 20px rgba(255, 107, 107, 0.35);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+    .auth-btn:hover,
+    .auth-btn:focus {
+        opacity: 0.95;
+        transform: translateY(-1px);
+        box-shadow: 0 14px 30px rgba(255, 107, 107, 0.45);
+    }
+
+/* 底部辅助文字 / 链接 */
+.auth-switch-text {
+    font-size: 0.95rem;
+    color: #6b7280;
+}
+
+.auth-link {
+    color: #ff7a46;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+    .auth-link:hover {
+        text-decoration: underline;
+    }
+
+@media (max-width: 576px) {
+    .auth-card-wrapper {
+        margin-top: -55px; 
+        padding-top: 20px;
+    }
+
+    .auth-hero {
+        padding: 50px 20px; 
+    }
+
+    .auth-title {
+        font-size: 1.9rem;
+        margin-bottom: 6px;
+    }
+
+    .auth-subtitle {
+        font-size: 0.95rem;
+    }
+}
+
