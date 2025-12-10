@@ -1,15 +1,27 @@
 /*
  * Author: Gunpreet Singh
  * Id: 9022194
+ * UPDATED: Added Admin User Seeding (ONLY addition - all products kept exactly as original)
  */
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace PetStore.Models
 {
     public static class DbSeeder
     {
+        // Same password hashing as AccountController - for consistency
+        private static string HashPassword(string password)
+        {
+            using var sha = SHA256.Create();
+            var bytes = Encoding.UTF8.GetBytes(password);
+            var hash = sha.ComputeHash(bytes);
+            return Convert.ToBase64String(hash);
+        }
+
         public static void SeedDatabase(IApplicationBuilder app)
         {
             try
@@ -17,7 +29,7 @@ namespace PetStore.Models
                 using (var scope = app.ApplicationServices.CreateScope())
                 {
                     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                    
+
                     // Ensure database is created
                     try
                     {
@@ -32,14 +44,42 @@ namespace PetStore.Models
                         return;
                     }
 
-                // Seed Categories
-                var categoryCount = context.Categories.Count();
-                System.Diagnostics.Debug.WriteLine($"Categories in database: {categoryCount}");
-                
-                if (!context.Categories.Any())
-                {
-                    var categories = new[]
+                    // ============================================
+                    // SEED ADMIN USER (ONLY NEW ADDITION)
+                    // ============================================
+                    var adminCount = context.Users.Count(u => u.Role == "Admin");
+                    System.Diagnostics.Debug.WriteLine($"Admin users in database: {adminCount}");
+
+                    if (adminCount == 0)
                     {
+                        var adminUser = new User
+                        {
+                            Username = "admin",
+                            Email = "adminpetstore@gmail.com",
+                            PasswordHash = HashPassword("AdminPetStore123"), // SHA256 - same as customer accounts
+                            FullName = "Pet Store Administrator",
+                            PhoneNumber = "555-ADMIN",
+                            Role = "Admin",
+                            CreatedAt = DateTime.Now
+                        };
+
+                        context.Users.Add(adminUser);
+                        context.SaveChanges();
+                        System.Diagnostics.Debug.WriteLine("? Admin user seeded successfully");
+                        System.Diagnostics.Debug.WriteLine($"  Email: {adminUser.Email}");
+                        System.Diagnostics.Debug.WriteLine($"  Password: AdminPetStore123");
+                    }
+
+                    // ============================================
+                    // SEED CATEGORIES (ORIGINAL - NO CHANGES)
+                    // ============================================
+                    var categoryCount = context.Categories.Count();
+                    System.Diagnostics.Debug.WriteLine($"Categories in database: {categoryCount}");
+
+                    if (!context.Categories.Any())
+                    {
+                        var categories = new[]
+                        {
                         new Category { CategoryName = "Cats", Description = "Beautiful and independent feline companions" },
                         new Category { CategoryName = "Dogs", Description = "Loyal and friendly canine friends" },
                         new Category { CategoryName = "Birds", Description = "Colorful and intelligent feathered pets" },
@@ -47,31 +87,33 @@ namespace PetStore.Models
                         new Category { CategoryName = "Hamsters", Description = "Tiny and playful pocket pets" }
                     };
 
-                    context.Categories.AddRange(categories);
-                    context.SaveChanges();
-                    System.Diagnostics.Debug.WriteLine("Categories seeded successfully");
-                }
+                        context.Categories.AddRange(categories);
+                        context.SaveChanges();
+                        System.Diagnostics.Debug.WriteLine("Categories seeded successfully");
+                    }
 
-                // Seed Products
-                var productCount = context.Products.Count();
-                System.Diagnostics.Debug.WriteLine($"Products in database: {productCount}");
-                
-                if (!context.Products.Any())
-                {
-                    var categories = context.Categories.ToList();
-                    var catCategory = categories.FirstOrDefault(c => c.CategoryName == "Cats");
-                    var dogCategory = categories.FirstOrDefault(c => c.CategoryName == "Dogs");
-                    var birdCategory = categories.FirstOrDefault(c => c.CategoryName == "Birds");
-                    var rabbitCategory = categories.FirstOrDefault(c => c.CategoryName == "Rabbits");
-                    var hamsterCategory = categories.FirstOrDefault(c => c.CategoryName == "Hamsters");
+                    // ============================================
+                    // SEED PRODUCTS (ORIGINAL - ALL KEPT EXACTLY AS-IS)
+                    // ============================================
+                    var productCount = context.Products.Count();
+                    System.Diagnostics.Debug.WriteLine($"Products in database: {productCount}");
 
-                    var products = new List<Product>();
-
-                    // Cats
-                    if (catCategory != null)
+                    if (!context.Products.Any())
                     {
-                        products.AddRange(new[]
+                        var categories = context.Categories.ToList();
+                        var catCategory = categories.FirstOrDefault(c => c.CategoryName == "Cats");
+                        var dogCategory = categories.FirstOrDefault(c => c.CategoryName == "Dogs");
+                        var birdCategory = categories.FirstOrDefault(c => c.CategoryName == "Birds");
+                        var rabbitCategory = categories.FirstOrDefault(c => c.CategoryName == "Rabbits");
+                        var hamsterCategory = categories.FirstOrDefault(c => c.CategoryName == "Hamsters");
+
+                        var products = new List<Product>();
+
+                        // Cats (ALL 4 ORIGINAL PRODUCTS)
+                        if (catCategory != null)
                         {
+                            products.AddRange(new[]
+                            {
                             new Product
                             {
                                 ProductName = "kelly - Persian Cat",
@@ -133,13 +175,13 @@ namespace PetStore.Models
                                 StockQuantity = 2
                             }
                         });
-                    }
+                        }
 
-                    // Dogs
-                    if (dogCategory != null)
-                    {
-                        products.AddRange(new[]
+                        // Dogs (ALL 5 ORIGINAL PRODUCTS)
+                        if (dogCategory != null)
                         {
+                            products.AddRange(new[]
+                            {
                             new Product
                             {
                                 ProductName = "Buddy - Golden Retriever",
@@ -216,13 +258,13 @@ namespace PetStore.Models
                                 StockQuantity = 2
                             }
                         });
-                    }
+                        }
 
-                    // Birds
-                    if (birdCategory != null)
-                    {
-                        products.AddRange(new[]
+                        // Birds (ALL 2 ORIGINAL PRODUCTS)
+                        if (birdCategory != null)
                         {
+                            products.AddRange(new[]
+                            {
                             new Product
                             {
                                 ProductName = "Rio - Blue and Gold Macaw",
@@ -254,13 +296,13 @@ namespace PetStore.Models
                                 StockQuantity = 4
                             }
                         });
-                    }
+                        }
 
-                    // Rabbits
-                    if (rabbitCategory != null)
-                    {
-                        products.AddRange(new[]
+                        // Rabbits (ALL 2 ORIGINAL PRODUCTS)
+                        if (rabbitCategory != null)
                         {
+                            products.AddRange(new[]
+                            {
                             new Product
                             {
                                 ProductName = "Snowball - Angora Rabbit",
@@ -292,13 +334,13 @@ namespace PetStore.Models
                                 StockQuantity = 3
                             }
                         });
-                    }
+                        }
 
-                    // Hamsters
-                    if (hamsterCategory != null)
-                    {
-                        products.AddRange(new[]
+                        // Hamsters (ORIGINAL PRODUCT)
+                        if (hamsterCategory != null)
                         {
+                            products.AddRange(new[]
+                            {
                             new Product
                             {
                                 ProductName = "Nibbles - Syrian Hamster",
@@ -315,16 +357,16 @@ namespace PetStore.Models
                                 StockQuantity = 5
                             }
                         });
-                    }
+                        }
 
-                    context.Products.AddRange(products);
-                    context.SaveChanges();
-                    System.Diagnostics.Debug.WriteLine($"Products seeded successfully: {products.Count} products added");
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine("Products already exist in database, skipping seed");
-                }
+                        context.Products.AddRange(products);
+                        context.SaveChanges();
+                        System.Diagnostics.Debug.WriteLine($"Products seeded successfully: {products.Count} products added");
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine("Products already exist in database, skipping seed");
+                    }
                 }
             }
             catch (Exception ex)
@@ -339,4 +381,3 @@ namespace PetStore.Models
         }
     }
 }
-

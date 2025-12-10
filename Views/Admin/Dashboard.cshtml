@@ -1,0 +1,144 @@
+@model IEnumerable<PetStore.Models.Product>
+
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "_AdminLayout";
+}
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h2 class="mb-0" style="color: #667eea;">@ViewBag.TotalProducts</h2>
+                <p class="text-muted mb-0">Total Products</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h2 class="mb-0" style="color: #28a745;">@ViewBag.TotalCategories</h2>
+                <p class="text-muted mb-0">Categories</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h2 class="mb-0" style="color: #17a2b8;">@ViewBag.TotalUsers</h2>
+                <p class="text-muted mb-0">Total Users</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h2 class="mb-0" style="color: #dc3545;">@ViewBag.LowStockProducts</h2>
+                <p class="text-muted mb-0">Low Stock Alert</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <a href="@Url.Action("CreateProduct", "Admin")" class="btn btn-admin-primary me-2 mb-2">
+                    ➕ Add New Product
+                </a>
+                <a href="@Url.Action("CreateCategory", "Admin")" class="btn btn-success me-2 mb-2">
+                    📁 Add Category
+                </a>
+                <a href="@Url.Action("Products", "Admin")" class="btn btn-info me-2 mb-2">
+                    📋 View All Products
+                </a>
+                <a href="@Url.Action("Users", "Admin")" class="btn btn-warning mb-2">
+                    👥 Manage Users
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Products -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Recently Added Products</h5>
+                <a href="@Url.Action("Products", "Admin")" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body">
+                @if (Model != null && Model.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Product Name</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Stock</th>
+                                    <th>Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var product in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <img src="@product.ImageUrl" alt="@product.ProductName" 
+                                                 style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;"
+                                                 onerror="this.src='https://via.placeholder.com/50'">
+                                        </td>
+                                        <td>@product.ProductName</td>
+                                        <td>
+                                            <span class="badge bg-info">@product.Category?.CategoryName</span>
+                                        </td>
+                                        <td>$@product.Price.ToString("N2")</td>
+                                        <td>
+                                            @if (product.StockQuantity < 5)
+                                            {
+                                                <span class="badge bg-danger">@product.StockQuantity</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-success">@product.StockQuantity</span>
+                                            }
+                                        </td>
+                                        <td>@product.CreatedAt.ToString("MMM dd, yyyy")</td>
+                                        <td>
+                                            <a href="@Url.Action("EditProduct", "Admin", new { id = product.ProductID })" 
+                                               class="btn btn-sm btn-outline-primary">Edit</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-center text-muted py-4">No products found. <a href="@Url.Action("CreateProduct", "Admin")">Add your first product</a></p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Auto-dismiss alerts after 5 seconds
+        setTimeout(function() {
+            $('.alert').fadeOut('slow');
+        }, 5000);
+    </script>
+}

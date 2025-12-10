@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Pet Store Admin</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        :root {
+            --admin-primary: #667eea;
+            --admin-secondary: #764ba2;
+            --sidebar-width: 250px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Sidebar Styles */
+        .admin-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            background: linear-gradient(135deg, var(--admin-primary) 0%, var(--admin-secondary) 100%);
+            color: white;
+            padding: 20px 0;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .admin-sidebar .brand {
+            padding: 0 20px 20px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 20px;
+        }
+
+        .admin-sidebar .brand h4 {
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .admin-sidebar .nav-link {
+            color: rgba(255,255,255,0.8);
+            padding: 12px 20px;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .admin-sidebar .nav-link:hover,
+        .admin-sidebar .nav-link.active {
+            color: white;
+            background: rgba(255,255,255,0.1);
+            border-left-color: white;
+        }
+
+        .admin-sidebar .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content Area */
+        .admin-content {
+            margin-left: var(--sidebar-width);
+            padding: 20px;
+            min-height: 100vh;
+            background: #f8f9fa;
+        }
+
+        /* Top Bar */
+        .admin-topbar {
+            background: white;
+            padding: 15px 20px;
+            margin: -20px -20px 20px -20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-topbar h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .admin-user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .admin-user-info .user-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .admin-user-info .user-role {
+            font-size: 12px;
+            color: #6c757d;
+            background: #e9ecef;
+            padding: 3px 10px;
+            border-radius: 12px;
+        }
+
+        /* Cards */
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            background: white;
+            border-bottom: 2px solid #f0f0f0;
+            font-weight: 600;
+            padding: 15px 20px;
+        }
+
+        /* Buttons */
+        .btn-admin-primary {
+            background: linear-gradient(135deg, var(--admin-primary) 0%, var(--admin-secondary) 100%);
+            border: none;
+            color: white;
+        }
+
+        .btn-admin-primary:hover {
+            opacity: 0.9;
+            color: white;
+        }
+
+        /* Alerts */
+        .alert {
+            border-radius: 8px;
+            border: none;
+        }
+
+        /* Tables */
+        .table {
+            background: white;
+        }
+
+        .table thead {
+            background: #f8f9fa;
+        }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .admin-sidebar {
+                transform: translateX(-100%);
+            }
+
+            .admin-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="admin-sidebar">
+        <div class="brand">
+            <h4>🐾 Pet Store Admin</h4>
+            <small>Management Panel</small>
+        </div>
+
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Dashboard" ? "active" : "")" 
+                   asp-controller="Admin" asp-action="Dashboard">
+                    Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Products" || 
+                                     ViewContext.RouteData.Values["action"]?.ToString() == "CreateProduct" || 
+                                     ViewContext.RouteData.Values["action"]?.ToString() == "EditProduct" ? "active" : "")" 
+                   asp-controller="Admin" asp-action="Products">
+                    Products
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Categories" || 
+                                     ViewContext.RouteData.Values["action"]?.ToString() == "CreateCategory" || 
+                                     ViewContext.RouteData.Values["action"]?.ToString() == "EditCategory" ? "active" : "")" 
+                   asp-controller="Admin" asp-action="Categories">
+                    Categories
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Users" || 
+                                     ViewContext.RouteData.Values["action"]?.ToString() == "EditUser" ? "active" : "")" 
+                   asp-controller="Admin" asp-action="Users">
+                   Users
+                </a>
+            </li>
+            <li class="nav-item mt-4 pt-4" style="border-top: 1px solid rgba(255,255,255,0.2);">
+                <a class="nav-link" href="/" target="_blank">
+                   View Store
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Admin" asp-action="Logout">
+                    Logout
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="admin-content">
+        <!-- Top Bar -->
+        <div class="admin-topbar">
+            <h1>@ViewData["Title"]</h1>
+            <div class="admin-user-info">
+                <div>
+                    <div class="user-name">@Context.Session.GetString("Username")</div>
+                    <span class="user-role">@Context.Session.GetString("UserRole")</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alerts -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Success!</strong> @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Error!</strong> @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <!-- Page Content -->
+        @RenderBody()
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

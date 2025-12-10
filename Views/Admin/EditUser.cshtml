@@ -1,0 +1,96 @@
+@model PetStore.Models.User
+
+@{
+    ViewData["Title"] = "Edit User";
+    Layout = "_AdminLayout";
+}
+
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Edit User: @Model.Username</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" asp-action="EditUser" asp-route-id="@Model.UserID">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="UserID" />
+                    <input type="hidden" asp-for="CreatedAt" />
+                    <input type="hidden" asp-for="PasswordHash" />
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Username" class="form-label">Username *</label>
+                            <input asp-for="Username" class="form-control" required />
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Email" class="form-label">Email *</label>
+                            <input asp-for="Email" type="email" class="form-control" required />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="FullName" class="form-label">Full Name *</label>
+                            <input asp-for="FullName" class="form-control" required />
+                            <span asp-validation-for="FullName" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="PhoneNumber" class="form-label">Phone Number *</label>
+                            <input asp-for="PhoneNumber" class="form-control" required />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Role" class="form-label">Role *</label>
+                            <select asp-for="Role" class="form-select" required>
+                                @if (Model.Role == "Customer")
+                                {
+                                    <option value="Customer" selected>Customer</option>
+                                    <option value="Admin">Admin</option>
+                                }
+                                else
+                                {
+                                    <option value="Customer">Customer</option>
+                                    <option value="Admin" selected>Admin</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Role" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="newPassword" class="form-label">New Password (Optional)</label>
+                            <input type="password" class="form-control" id="newPassword" name="newPassword" 
+                                   placeholder="Leave blank to keep current password" />
+                            <small class="text-muted">Only fill this if you want to change the password</small>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <strong>Note:</strong> User joined on @Model.CreatedAt.ToString("MMMM dd, yyyy")
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="@Url.Action("Users")" class="btn btn-secondary">
+                            ← Back to Users
+                        </a>
+                        <button type="submit" class="btn btn-admin-primary">
+                            ✓ Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
