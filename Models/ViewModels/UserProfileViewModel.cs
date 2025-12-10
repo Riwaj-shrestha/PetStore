@@ -1,4 +1,8 @@
-﻿namespace PetStore.Models.ViewModels
+﻿/*
+ * Author: Riwaj Shrestha
+ * Id: 8890002
+ */
+namespace PetStore.Models.ViewModels
 {
     public class UserProfileViewModel
     {
