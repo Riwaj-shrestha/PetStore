@@ -1,0 +1,153 @@
+﻿@model IEnumerable<PetStore.Models.CartItem>
+
+@{
+    ViewData["Title"] = "Shopping Cart";
+    var items = Model?.ToList() ?? new List<PetStore.Models.CartItem>();
+    var total = ViewBag.CartTotal as decimal? ?? items.Sum(i => i.Product.Price * i.Quantity);
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/cart.css" asp-append-version="true" />
+}
+
+<div class="cart-page">
+    <!-- page background wrapper -->
+    <!-- Gradient hero section -->
+    <div class="cart-hero-section">
+        <div class="container d-flex justify-content-center">
+            <h1 class="cart-hero-title text-center">
+                <i class="bi bi-cart3 me-2"></i>
+                Shopping Cart
+            </h1>
+        </div>
+    </div>
+
+
+    <div class="cart-wrapper container my-5">
+
+        @if (!items.Any())
+        {
+            <!-- Empty cart state -->
+            <div class="cart-empty-box text-center p-5">
+                <i class="bi bi-emoji-frown cart-empty-icon mb-3"></i>
+                <h3>Your cart is empty</h3>
+                <p class="text-muted mb-4">
+                    Browse our pets and add your favourites to the cart.
+                </p>
+                <a asp-controller="Products" asp-action="Index" class="btn btn-primary">
+                    <i class="bi bi-search"></i> Browse Pets
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="cart-card p-4">
+
+                <!-- Table (desktop) / stacked cards (mobile) -->
+                <table class="table align-middle cart-table">
+                    <thead>
+                        <tr>
+                            <th>Pet</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Subtotal</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in items)
+                        {
+                            var product = item.Product;
+                            var subTotal = product.Price * item.Quantity;
+
+                            <tr class="cart-row">
+                                <!-- Pet info -->
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        @if (!string.IsNullOrEmpty(product.ImageUrl))
+                                        {
+                                            <img src="@product.ImageUrl"
+                                                 alt="@product.ProductName"
+                                                 class="cart-product-img me-3" />
+                                        }
+                                        <div>
+                                            <strong class="cart-product-name">@product.ProductName</strong><br />
+                                            <small class="text-muted">@product.Breed</small><br />
+                                            <small class="text-muted">ID: @product.ProductID</small>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Unit price -->
+                                <td data-label="Price" class="cart-price">
+                                    $@product.Price.ToString("F2")
+                                </td>
+
+                                <!-- Quantity -->
+                                <td data-label="Quantity">
+                                    <form asp-action="UpdateQuantity" method="post" class="d-flex cart-qty-form">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="cartItemId" value="@item.CartItemID" />
+                                        <input type="number"
+                                               name="quantity"
+                                               value="@item.Quantity"
+                                               min="1"
+                                               class="form-control form-control-sm me-2 quantity-input" />
+                                        <button type="submit"
+                                                class="btn btn-sm btn-outline-secondary cart-update-btn">
+                                            Update
+                                        </button>
+                                    </form>
+                                </td>
+
+                                <!-- Subtotal -->
+                                <td data-label="Subtotal" class="cart-subtotal">
+                                    $@subTotal.ToString("F2")
+                                </td>
+
+                                <!-- Remove -->
+                                <td>
+                                    <form asp-action="Remove" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="cartItemId" value="@item.CartItemID" />
+                                        <button type="submit" class="btn btn-sm btn-danger cart-remove-btn">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <!-- Bottom summary -->
+                <div class="cart-summary d-flex justify-content-between align-items-center mt-4">
+
+                    <form asp-action="Clear" method="post">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-outline-danger cart-clear-btn">
+                            Clear Cart
+                        </button>
+                    </form>
+
+                    <div class="text-end">
+                        <h4 class="cart-total">Total: $@total.ToString("F2")</h4>
+
+                        <a asp-controller="Products" asp-action="Index"
+                           class="btn btn-outline-secondary me-2">
+                            Continue Shopping
+                        </a>
+
+                        <!-- Checkout link (adjust controller/action if needed) -->
+                        <a asp-controller="Orders" asp-action="Checkout"
+                           class="btn btn-primary cart-checkout-btn">
+                            Checkout
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+        }
+    </div>
+</div> <!-- /cart-page -->
