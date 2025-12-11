@@ -1,0 +1,151 @@
+@* Author - Swedha - 8995269 *@
+
+@model IEnumerable<PetStore.Models.Product>
+
+@{
+    ViewData["Title"] = "Manage Products";
+    Layout = "_AdminLayout";
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="admin-card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Product Filters</h5>
+                <a href="/Admin/CreateProduct" class="btn btn-admin-primary">
+                    ➕ Add New Product
+                </a>
+            </div>
+            <div class="admin-card-body">
+                <form method="get" action="/Admin/Products" class="row g-3">
+                    <div class="col-md-5">
+                        @{
+                            var searchValue = ViewBag.SearchTerm != null ? ViewBag.SearchTerm.ToString() : "";
+                        }
+                        <input type="text" class="form-control" name="searchTerm" 
+                               placeholder="Search by name or breed..." 
+                               value="@searchValue">
+                    </div>
+                    <div class="col-md-4">
+                        <select class="form-select" name="categoryId">
+                            <option value="">All Categories</option>
+                            @if (ViewBag.Categories != null)
+                            {
+                                @foreach (var category in ViewBag.Categories)
+                                {
+                                    var isSelected = ViewBag.SelectedCategoryId != null && ViewBag.SelectedCategoryId == category.CategoryID;
+                                    
+                                    @if (isSelected)
+                                    {
+                                        <option value="@category.CategoryID" selected>@category.CategoryName</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@category.CategoryID">@category.CategoryName</option>
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-admin-primary w-100">🔍 Search</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="admin-card-header">
+                <h5 class="mb-0">All Products (@Model.Count())</h5>
+            </div>
+            <div class="admin-card-body">
+                @if (Model != null && Model.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Image</th>
+                                    <th>Product Name</th>
+                                    <th>Breed</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Stock</th>
+                                    <th>Age</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var product in Model)
+                                {
+                                    <tr>
+                                        <td>@product.ProductID</td>
+                                        <td>
+                                            <img src="@product.ImageUrl" alt="@product.ProductName" 
+                                                 style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;"
+                                                 onerror="this.src='https://via.placeholder.com/60'">
+                                        </td>
+                                        <td><strong>@product.ProductName</strong></td>
+                                        <td>@product.Breed</td>
+                                        <td>
+                                            @if (product.Category != null)
+                                            {
+                                                <span class="badge bg-info">@product.Category.CategoryName</span>
+                                            }
+                                        </td>
+                                        <td><strong>$@product.Price.ToString("N2")</strong></td>
+                                        <td>
+                                            @if (product.StockQuantity < 5)
+                                            {
+                                                <span class="badge bg-danger">@product.StockQuantity (Low)</span>
+                                            }
+                                            else if (product.StockQuantity < 10)
+                                            {
+                                                <span class="badge bg-warning text-dark">@product.StockQuantity</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-success">@product.StockQuantity</span>
+                                            }
+                                        </td>
+                                        <td>@product.AgeInMonths mo</td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a href="/Admin/EditProduct/@product.ProductID" 
+                                                   class="btn btn-sm btn-outline-primary">
+                                                     Edit
+                                                </a>
+                                                <form method="post" action="/Admin/DeleteProduct/@product.ProductID" 
+                                                      style="display: inline;"
+                                                      onsubmit="return confirm('Are you sure you want to delete @product.ProductName?');">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                         Delete
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <p class="text-muted">No products found.</p>
+                        <a href="/Admin/CreateProduct" class="btn btn-admin-primary">
+                            ➕ Add Your First Product
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

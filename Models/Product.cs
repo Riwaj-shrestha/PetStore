@@ -11,7 +11,7 @@ namespace PetStore.Models
         [Required, StringLength(100)] public string ProductName { get; set; }
 
         public int CategoryID { get; set; }
-        public Category Category { get; set; }
+        public Category? Category { get; set; }
 
         [Required, StringLength(50)] public string Breed { get; set; }
 
@@ -32,7 +32,7 @@ namespace PetStore.Models
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-        public ICollection<CartItem> CartItems { get; set; }
-        public ICollection<OrderedItem> OrderedItems { get; set; }
+        public ICollection<CartItem>? CartItems { get; set; }
+        public ICollection<OrderedItem>? OrderedItems { get; set; }
     }
 }

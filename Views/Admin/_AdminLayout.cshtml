@@ -1,0 +1,102 @@
+ @* Author - Swedha - 8995269 *@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Pet Store Admin</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="admin-sidebar">
+        <div class="brand">
+            <h4>🐾 Pet Store Admin</h4>
+            <small>Management Panel</small>
+        </div>
+
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Dashboard" ? "active" : "")" 
+                   asp-controller="Admin" asp-action="Dashboard">
+                    Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Products" || 
+                                     ViewContext.RouteData.Values["action"]?.ToString() == "CreateProduct" || 
+                                     ViewContext.RouteData.Values["action"]?.ToString() == "EditProduct" ? "active" : "")" 
+                   asp-controller="Admin" asp-action="Products">
+                    Products
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Categories" || 
+                                     ViewContext.RouteData.Values["action"]?.ToString() == "CreateCategory" || 
+                                     ViewContext.RouteData.Values["action"]?.ToString() == "EditCategory" ? "active" : "")" 
+                   asp-controller="Admin" asp-action="Categories">
+                    Categories
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Users" || 
+                                     ViewContext.RouteData.Values["action"]?.ToString() == "EditUser" ? "active" : "")" 
+                   asp-controller="Admin" asp-action="Users">
+                   Users
+                </a>
+            </li>
+            <li class="nav-item mt-4 pt-4" style="border-top: 1px solid rgba(255,255,255,0.2);">
+                <a class="nav-link" href="/Products">
+                   View Store
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Admin" asp-action="Logout">
+                    Logout
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="admin-content">
+        <!-- Top Bar -->
+        <div class="admin-topbar">
+            <h1>@ViewData["Title"]</h1>
+            <div class="admin-user-info">
+                <div>
+                    <div class="user-name">@Context.Session.GetString("Username")</div>
+                    <span class="user-role">@Context.Session.GetString("UserRole")</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alerts -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Success!</strong> @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Error!</strong> @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <!-- Page Content -->
+        @RenderBody()
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
