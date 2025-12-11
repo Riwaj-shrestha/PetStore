@@ -1,0 +1,133 @@
+﻿@model PetStore.Models.CheckoutModel
+
+@{
+    ViewData["Title"] = "Checkout";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/cart.css" />
+}
+
+<div class="cart-page">
+    <div class="cart-hero-section">
+        <div class="container d-flex justify-content-center">
+            <h1 class="cart-hero-title text-center">
+                <i class="bi bi-bag-check me-2"></i> Checkout
+            </h1>
+        </div>
+    </div>
+
+    <div class="cart-wrapper container my-5">
+        <div class="cart-card p-4">
+            <div class="checkout-form mt-4">
+                <h4>Billing & Shipping Information</h4>
+                <form asp-action="Checkout" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+                        <label asp-for="FullName"></label>
+                        <input asp-for="FullName" class="form-control" placeholder="John Doe" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email"></label>
+                        <input asp-for="Email" class="form-control" placeholder="email@example.com" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Phone"></label>
+                        <input asp-for="Phone" class="form-control" placeholder="123-456-7890" />
+                        <span asp-validation-for="Phone" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Address"></label>
+                        <input asp-for="Address" class="form-control" placeholder="123 Main St" />
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="City"></label>
+                        <input asp-for="City" class="form-control" placeholder="Toronto" />
+                        <span asp-validation-for="City" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Province"></label>
+                        <select asp-for="Province" class="form-control">
+                            <option value="">Select Province</option>
+                            <option value="AB">Alberta</option>
+                            <option value="BC">British Columbia</option>
+                            <option value="MB">Manitoba</option>
+                            <option value="NB">New Brunswick</option>
+                            <option value="NL">Newfoundland and Labrador</option>
+                            <option value="NS">Nova Scotia</option>
+                            <option value="ON">Ontario</option>
+                            <option value="PE">Prince Edward Island</option>
+                            <option value="QC">Quebec</option>
+                            <option value="SK">Saskatchewan</option>
+                            <option value="NT">Northwest Territories</option>
+                            <option value="NU">Nunavut</option>
+                            <option value="YT">Yukon</option>
+                        </select>
+                        <span asp-validation-for="Province" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Zip"></label>
+                        <input asp-for="Zip" class="form-control" placeholder="K1A 0B1" />
+                        <span asp-validation-for="Zip" class="text-danger"></span>
+                    </div>
+
+                    <h4>Payment Information</h4>
+
+                    <div class="mb-3">
+                        <label asp-for="CardHolderName"></label>
+                        <input asp-for="CardHolderName" class="form-control" placeholder="John Doe" />
+                        <span asp-validation-for="CardHolderName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="CardNumber"></label>
+                        <input asp-for="CardNumber" class="form-control" placeholder="1234 5678 9012 3456" />
+                        <span asp-validation-for="CardNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Expiry"></label>
+                        <input asp-for="Expiry" class="form-control" placeholder="MM/YY" />
+                        <span asp-validation-for="Expiry" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="CVV"></label>
+                        <input asp-for="CVV" class="form-control" placeholder="123" />
+                        <span asp-validation-for="CVV" class="text-danger"></span>
+                    </div>
+
+                    <div class="text-end mt-4">
+                        <a href="/Cart" class="btn btn-outline-secondary">Back to Cart</a>
+                        <button type="submit" class="btn btn-primary ms-2">Place Order</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        window.onload = function () {
+            var orderSuccess = '@ViewBag.OrderSuccess';
+            if (orderSuccess === 'True') {
+                if (confirm('Your order was successfully placed!\n\nClick OK to continue shopping.')) {
+                    window.location.href = '/Products';
+                }
+            }
+        }
+    </script>
+}
