@@ -2,92 +2,204 @@
  * Author: Riwaj Shrestha
  * Id: 8890002
  *@
+@model PetStore.Models.ViewModels.ContactViewModel
+
 @{
     ViewData["Title"] = "Contact Us";
 }
 
-<!-- Hero -->
-<section class="py-5" style="background: linear-gradient(to right, #eef2ff, #fef3c7);">
-    <div class="container text-center">
-        <h1 class="fw-bold display-5 mb-2">Get in Touch</h1>
-        <p class="text-muted fs-5">We’re here to support you and your pets.</p>
-    </div>
-</section>
+@section Styles {
+    <link rel="stylesheet" href="~/css/about.css" asp-append-version="true" />
+    
+    <style>
+        /* Page-Specific Overrides to match Theme */
+        .contact-icon-box {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--off-white);
+            color: var(--primary-orange);
+            font-size: 1.25rem;
+            transition: all 0.3s ease;
+        }
 
-<!-- Main Content -->
-<section class="py-5">
-    <div class="container">
+        .contact-item:hover .contact-icon-box {
+            background: var(--gradient-primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .form-control {
+            border: 2px solid var(--medium-gray);
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 0 4px rgba(255, 140, 66, 0.1);
+        }
+
+        .btn-send {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-send:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-primary);
+            color: white;
+        }
+
+        .social-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--off-white);
+            color: var(--text-light);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .social-btn:hover {
+            background: var(--primary-orange);
+            color: white;
+            transform: translateY(-3px);
+        }
+    </style>
+}
+
+<div class="hero-section">
+    <div class="hero-content">
+        <h1 class="hero-title">Get in Touch</h1>
+        <p class="hero-subtitle">We’re here to support you and your pets every step of the way.</p>
+    </div>
+</div>
+
+<section class="py-5 bg-white">
+    <div class="container py-4">
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success border-0 shadow-sm mb-5" role="alert">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-check-circle-fill fs-4 me-3 text-success"></i>
+                    <div>
+                        <h5 class="alert-heading fw-bold mb-1">Message Sent!</h5>
+                        <p class="mb-0">@TempData["SuccessMessage"]</p>
+                    </div>
+                </div>
+            </div>
+        }
+
         <div class="row g-5">
 
-            <!-- Contact Info -->
-            <div class="col-md-5">
-                <div class="p-4 rounded-4 shadow-sm bg-white h-100">
+            <div class="col-lg-5">
+                <div class="feature-card p-4 p-lg-5 h-100 shadow-lg">
+                    <h3 class="fw-bold mb-5 section-title">Contact Information</h3>
 
-                    <h3 class="fw-bold mb-4">Contact Information</h3>
+                    <div class="d-flex align-items-center mb-4 contact-item">
+                        <div class="contact-icon-box shadow-sm me-3">
+                            <i class="bi bi-geo-alt-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-0 text-dark">Visit Us</h6>
+                            <p class="text-muted mb-0 small">123 Pet Street, Toronto, ON</p>
+                        </div>
+                    </div>
 
-                    <p class="mb-3">
-                        <i class="bi bi-geo-alt-fill text-danger fs-5"></i>
-                        <span class="ms-2 text-muted">123 Pet Street, Toronto, Canada</span>
-                    </p>
+                    <div class="d-flex align-items-center mb-4 contact-item">
+                        <div class="contact-icon-box shadow-sm me-3">
+                            <i class="bi bi-telephone-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-0 text-dark">Call Us</h6>
+                            <p class="text-muted mb-0 small">+1 (416) 555-1234</p>
+                        </div>
+                    </div>
 
-                    <p class="mb-3">
-                        <i class="bi bi-telephone-fill text-primary fs-5"></i>
-                        <span class="ms-2 text-muted">+1 (416) 555-1234</span>
-                    </p>
+                    <div class="d-flex align-items-center mb-5 contact-item">
+                        <div class="contact-icon-box shadow-sm me-3">
+                            <i class="bi bi-envelope-fill"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-0 text-dark">Email Us</h6>
+                            <p class="text-muted mb-0 small">support@petstore.com</p>
+                        </div>
+                    </div>
 
-                    <p class="mb-4">
-                        <i class="bi bi-envelope-fill text-success fs-5"></i>
-                        <span class="ms-2 text-muted">support@petstore.com</span>
-                    </p>
+                    <hr class="text-muted opacity-25 mb-4">
 
-                    <h5 class="fw-semibold mb-3">Business Hours</h5>
-                    <ul class="list-unstyled text-muted">
-                        <li>Mon – Fri: 9:00 AM – 7:00 PM</li>
-                        <li>Saturday: 10:00 AM – 5:00 PM</li>
-                        <li>Sunday: Closed</li>
+                    <h5 class="fw-bold mb-3" style="color: var(--text-dark)">Business Hours</h5>
+                    <ul class="list-unstyled text-muted small mb-4">
+                        <li class="mb-2 d-flex justify-content-between"><span>Mon – Fri:</span> <span class="fw-semibold">9:00 AM – 7:00 PM</span></li>
+                        <li class="mb-2 d-flex justify-content-between"><span>Saturday:</span> <span class="fw-semibold">10:00 AM – 5:00 PM</span></li>
+                        <li class="d-flex justify-content-between"><span>Sunday:</span> <span class="text-danger fw-semibold">Closed</span></li>
                     </ul>
 
-                    <!-- Social -->
-                    <h5 class="fw-semibold mt-4 mb-3">Follow Us</h5>
-                    <div class="d-flex gap-3 fs-3">
-                        <i class="bi bi-facebook text-primary"></i>
-                        <i class="bi bi-instagram text-danger"></i>
-                        <i class="bi bi-twitter text-info"></i>
+                    <h5 class="fw-bold mt-4 mb-3" style="color: var(--text-dark)">Follow Us</h5>
+                    <div class="d-flex gap-2">
+                        <a href="#" class="social-btn shadow-sm"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="social-btn shadow-sm"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="social-btn shadow-sm"><i class="bi bi-twitter-x"></i></a>
                     </div>
                 </div>
             </div>
 
-            <!-- Contact Form -->
-            <div class="col-md-7">
-                <div class="p-4 rounded-4 shadow-sm bg-white">
+            <div class="col-lg-7">
+                <div class="card border-0 shadow-lg rounded-4 p-4 p-lg-5 h-100">
+                    <h3 class="fw-bold mb-4 section-title">Send Us a Message</h3>
 
-                    <h3 class="fw-bold mb-4">Send Us a Message</h3>
-
-                    <form>
+                    <form asp-action="Contact" method="post">
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label class="form-label">Full Name</label>
-                                <input type="text" class="form-control" placeholder="Enter your name">
+                                <label asp-for="Name" class="form-label fw-semibold text-muted small text-uppercase">Full Name</label>
+                                <input asp-for="Name" class="form-control" placeholder="John Doe">
+                                <span asp-validation-for="Name" class="text-danger small"></span>
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Email Address</label>
-                                <input type="email" class="form-control" placeholder="email@example.com">
+                                <label asp-for="Email" class="form-label fw-semibold text-muted small text-uppercase">Email Address</label>
+                                <input asp-for="Email" class="form-control" placeholder="name@example.com">
+                                <span asp-validation-for="Email" class="text-danger small"></span>
                             </div>
 
                             <div class="col-12">
-                                <label class="form-label">Message</label>
-                                <textarea class="form-control" rows="5" placeholder="Write your message..."></textarea>
+                                <label asp-for="Subject" class="form-label fw-semibold text-muted small text-uppercase">Subject</label>
+                                <select asp-for="Subject" class="form-select form-control text-muted">
+                                    <option value="">Select a Subject</option>
+                                    <option value="General Inquiry">General Inquiry</option>
+                                    <option value="Order Support">Order Support</option>
+                                    <option value="Adoption Question">Adoption Question</option>
+                                </select>
+                                <span asp-validation-for="Subject" class="text-danger small"></span>
                             </div>
 
                             <div class="col-12">
-                                <button class="btn btn-primary w-100 py-2 fw-semibold">
-                                    Send Message
+                                <label asp-for="Message" class="form-label fw-semibold text-muted small text-uppercase">Message</label>
+                                <textarea asp-for="Message" class="form-control" rows="5" placeholder="How can we help you today?"></textarea>
+                                <span asp-validation-for="Message" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12 mt-4">
+                                <button type="submit" class="btn btn-send w-100">
+                                    <i class="bi bi-send-fill me-2"></i> Send Message
                                 </button>
                             </div>
                         </div>
                     </form>
-
                 </div>
             </div>
 
@@ -95,11 +207,15 @@
     </div>
 </section>
 
-<!-- Map -->
-<section class="pb-5">
-    <div class="container">
-        <div class="ratio ratio-16x9 rounded-4 shadow-sm overflow-hidden">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d46390.34162736401!2d-80.48065075136716!3d43.38964450000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x882b9018e9e89adf%3A0x2043c24369ede07e!2sConestoga%20College%20Kitchener%20-%20Doon%20Campus!5e0!3m2!1sen!2sca!4v1764968786619!5m2!1sen!2sca" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+<section class="pb-5 bg-white">
+    <div class="container pb-4">
+        <div class="ratio ratio-21x9 rounded-4 shadow-md overflow-hidden border border-2 border-white">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2886.436496734316!2d-79.3870564!3d43.6425662!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x882b34d68bf33a9b%3A0x15edd8c4de1c7581!2sCN%20Tower!5e0!3m2!1sen!2sca!4v1678901234567!5m2!1sen!2sca" 
+                style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
     </div>
 </section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
