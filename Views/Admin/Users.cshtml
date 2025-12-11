@@ -1,0 +1,132 @@
+@* Author - Swedha - 8995269 *@
+
+@model IEnumerable<PetStore.Models.User>
+
+@{
+    ViewData["Title"] = "Manage Users";
+    Layout = "_AdminLayout";
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">User Filters</h5>
+            </div>
+            <div class="admin-card-body">
+                <form method="get" action="/Admin/Users" class="row g-3">
+                    <div class="col-md-6">
+                        @{
+                            var searchValue = ViewBag.SearchTerm != null ? ViewBag.SearchTerm.ToString() : "";
+                        }
+                        <input type="text" class="form-control" name="searchTerm" 
+                               placeholder="Search by name, email, or username..." 
+                               value="@searchValue">
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" name="roleFilter">
+                            <option value="">All Roles</option>
+                            @if (ViewBag.RoleFilter == "Admin")
+                            {
+                                <option value="Admin" selected>Admin</option>
+                                <option value="Customer">Customer</option>
+                            }
+                            else if (ViewBag.RoleFilter == "Customer")
+                            {
+                                <option value="Admin">Admin</option>
+                                <option value="Customer" selected>Customer</option>
+                            }
+                            else
+                            {
+                                <option value="Admin">Admin</option>
+                                <option value="Customer">Customer</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-admin-primary w-100">🔍 Search</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="admin-card-header">
+                <h5 class="mb-0">All Users (@Model.Count())</h5>
+            </div>
+            <div class="admin-card-body">
+                @if (Model != null && Model.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Username</th>
+                                    <th>Full Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Role</th>
+                                    <th>Joined</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var user in Model)
+                                {
+                                    <tr>
+                                        <td>@user.UserID</td>
+                                        <td><strong>@user.Username</strong></td>
+                                        <td>@user.FullName</td>
+                                        <td>@user.Email</td>
+                                        <td>@user.PhoneNumber</td>
+                                        <td>
+                                            @if (user.Role == "Admin")
+                                            {
+                                                <span class="badge bg-danger">Admin</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-info">Customer</span>
+                                            }
+                                        </td>
+                                        <td>@user.CreatedAt.ToString("MMM dd, yyyy")</td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a href="/Admin/EditUser/@user.UserID" 
+                                                   class="btn btn-sm btn-outline-primary">
+                                                    ✏️ Edit
+                                                </a>
+                                                @if (user.UserID != Context.Session.GetInt32("UserID"))
+                                                {
+                                                    <form method="post" action="/Admin/DeleteUser/@user.UserID" 
+                                                          style="display: inline;"
+                                                          onsubmit="return confirm('Are you sure you want to delete user @user.Username?');">
+                                                        @Html.AntiForgeryToken()
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                            🗑️ Delete
+                                                        </button>
+                                                    </form>
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <p class="text-muted">No users found.</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
